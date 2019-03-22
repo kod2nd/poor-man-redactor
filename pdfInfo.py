@@ -65,13 +65,6 @@ class PdfInfo():
         else:
             return str(value)
 
-# with pdfplumber.open("article.pdf") as pdf:
-#     first_page = pdf.pages[0]
-#     firstChar = first_page.chars[0]
-
-#     for key in firstChar:
-#         print(decimalToFloat(firstChar[key]))
-
 
 instance1 = PdfInfo()
 
