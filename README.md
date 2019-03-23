@@ -22,6 +22,7 @@ from redactPDF.py import RedactPdf
 
 redactor = RedactPdf()
 redactor.pdfRedact(input, output, wordList)
+redactor.convertPdf2Text(input)
 ```
 
 
@@ -59,3 +60,11 @@ redactor = RedactPdf()
 redactor.pdfRedact("article.pdf", "output.pdf", wordList)
 ```
 
+### instance.convertPdf2Text(input)
+returns a list of strings. Each string represents the content of a page from the input pdf.
+
+#### Input
+
+Path to input pdf
+
+- Type(String)

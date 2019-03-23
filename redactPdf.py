@@ -18,6 +18,10 @@ class RedactPdf():
     def getPdfInfo(self, inputPdfPath, wordsToMasks):
         pdfInfoRead = PdfInfo2()
         return pdfInfoRead.controller(inputPdfPath, wordsToMasks)
+    
+    def convertPdf2Text(self, inputPdfPath):
+        pdfInfoRead = PdfInfo2()
+        return pdfInfoRead.pdf2Text(inputPdfPath)
 
     def addMasksToPages(self, pagesCharCoords, pdfOutput, outputPath):
         for page in pagesCharCoords:

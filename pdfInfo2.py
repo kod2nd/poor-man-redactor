@@ -65,6 +65,11 @@ class PdfInfo2():
             matches = [*matches, *self.getMatchIndice(pageText, entity)]
         return matches
 
+    def pdf2Text(self,path):
+        pdf = self.openPdf(path)
+        pages = self.getPages(pdf)
+        return [self.getPageText(page) for page in pages]
+
     def controller(self, path, entitiesToMask):
         pdf = self.openPdf(path)
         pages = self.getPages(pdf)
