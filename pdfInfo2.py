@@ -6,6 +6,10 @@ import re
 
 class PdfInfo2():
 
+    def convertToJson(self, docData, fileName="data.json"):
+        with open(fileName, 'w') as outfile:
+            json.dump(docData, outfile)
+
     def openPdf(self, path):
         self.pdf = pdfplumber.open(path)
         return self.pdf
@@ -13,7 +17,6 @@ class PdfInfo2():
     def getPages(self, pdf):
         self.pages = pdf.pages
         return pdf.pages
-    
 
     def getChars(self, page):
         charsOnPage = [self.formatCharData(
@@ -30,25 +33,25 @@ class PdfInfo2():
             return str(float(value))
         else:
             return str(value)
-        
-    def getCharIndices(self,positions):
+
+    def getCharIndices(self, positions):
         start = positions[0]
         end = positions[-1]
         diff = end - start
         return [i+start for i in range(diff)]
 
     def getMatchIndice(self, text, stringToMatch):
-        stringMatches = [[match.start(),match.end()] for match in re.finditer(stringToMatch, text)]
+        stringMatches = [[match.start(), match.end()]
+                         for match in re.finditer(stringToMatch, text)]
         return [self.getCharIndices(positions) for positions in stringMatches]
-    
-    
+
     def getPageText(self, page):
         characters = page.chars
         text = ""
         for character in characters:
             text += character["text"]
         return text
-    
+
     def matchedChars(self, pageChar, pageMatch):
         affectedChars = []
         for positions in pageMatch:
@@ -61,7 +64,7 @@ class PdfInfo2():
         for entity in entitiesToMask:
             matches = [*matches, *self.getMatchIndice(pageText, entity)]
         return matches
-        
+
     def controller(self, path, entitiesToMask):
         # entitiesToMask = ["Greenweave", "SINGAPORE", "Tampines Street 61", "housing development"]
 
@@ -71,8 +74,9 @@ class PdfInfo2():
         pagesText = [self.getPageText(page) for page in pages]
         pagesCharsToMask = {}
         for index, page in enumerate(pagesText):
-            matches = self.getMatches(page,entitiesToMask)
-            pagesCharsToMask[str(index)] = self.matchedChars(pagesChar[index],matches)
+            matches = self.getMatches(page, entitiesToMask)
+            pagesCharsToMask[str(index)] = self.matchedChars(
+                pagesChar[index], matches)
         return pagesCharsToMask
 
 
