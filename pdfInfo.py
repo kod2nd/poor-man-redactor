@@ -13,6 +13,7 @@ class PdfInfo():
     def getPages(self, pdf):
         self.pages = pdf.pages
         return pdf.pages
+    
 
     def getChars(self, page):
         charsOnPage = [self.formatCharData(
@@ -73,23 +74,25 @@ class PdfInfo():
                 if line[spaceIndex+1::]:
                     words.append(line[spaceIndex+1::])
         joinedWords = [self.joinWord(word) for word in words]
+
         return joinedWords
 
-    def isNotAlphaNumeric(self,char):
-        if re.search('[a-zA-Z0-9]',char):
-            return False
-        else:
+    def isAlphaNum(self, char):
+        if re.search('[a-zA-Z0-9]', char):
             return True
+        else:
+            return False
 
     def joinWord(self, word):
         firstChar = word[0]
         lastChar = word[-1]
-        if self.isNotAlphaNumeric(firstChar["text"]):
+        if not self.isAlphaNum(firstChar["text"]):
             if len(word) > 1:
                 firstChar = word[1]
-        if self.isNotAlphaNumeric(lastChar["text"]):
+        if not self.isAlphaNum(lastChar["text"]):
             if len(word) > 1:
                 lastChar = word[-2]
+
         joinedWord = {
             "x0": firstChar["x0"],
             "y0": firstChar["y0"],
@@ -99,22 +102,30 @@ class PdfInfo():
             "text": ""
         }
         for char in word:
-            joinedWord["text"] += char["text"]
+            if self.isAlphaNum(char["text"]):
+                joinedWord["text"] += char["text"]
         return joinedWord
 
+    def getMatchIndice(self, text, stringToMatch):
+        return [[match.start(),match.end()] for match in re.finditer(stringToMatch, text)]
+        
     def getWordCoords(self, path):
         pdf = self.openPdf(path)
         pages = self.getPages(pdf)
+        page1 = pages[0]
+        page1Chars = page1.chars
+        text = page1.extract_text()
+        matches = self.getMatchIndice(text.replace("\n",""), "overhead bridge")
         docData = {}
         for count, page in enumerate(pages):
             docData[str(count+1)] = self.getChars(page)
         docWords = [self.collateLines(page, docData) for page in docData]
         self.convertToJson(docWords)
-        return docWords
+        return matches, page1Chars
 
 
 instance1 = PdfInfo()
 
-# a = instance1.getWordCoords("article.pdf")
+a = instance1.getWordCoords("article.pdf")
 # a = instance1.collateLines()
 # instance1.char2Words()

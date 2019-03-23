@@ -1,12 +1,12 @@
 from PyPDF2 import PdfFileWriter, PdfFileReader
-from pdfInfo import PdfInfo
+from pdfInfo2 import PdfInfo2
 from PyPDF2Highlight import createHighlight, addHighlightToPage
 
 inputPdf = "article.pdf"
-wordsToMask = ["SINGAPORE","Greenview", "Greenweave", "Tampines"]
+# wordsToMask = ["SINGAPORE","Greenview", "Greenweave", "Tampines"]
 
-pdfInfoRead = PdfInfo()
-wordsCoords = pdfInfoRead.getWordCoords(inputPdf)
+pdfInfoRead = PdfInfo2()
+charCoords = pdfInfoRead.controller(inputPdf)
 
 
 def getMatchingWords(words, wordToMatch):
@@ -14,10 +14,10 @@ def getMatchingWords(words, wordToMatch):
     return matchingWords
 
 
-def maskWords(words, page, pdfOutput):
-    for word in words:
+def maskChars(chars, page, pdfOutput):
+    for char in chars:
         highlight = createHighlight(
-            word["x0"], word["y0"], word["x1"], word["y1"])
+            char["x0"], char["y0"], char["x1"], char["y1"])
         addHighlightToPage(highlight, page, pdfOutput)
     return
 
@@ -28,9 +28,11 @@ pdfOutput = PdfFileWriter()
 # 0 is the first page
 page1 = pdfInput.getPage(0)
 
-for wordToMask in wordsToMask:
-    matchingWords = getMatchingWords(wordsCoords[0], wordToMask)
-    maskWords(matchingWords, page1, pdfOutput)
+maskChars(charCoords,page1,pdfOutput)
+# for wordToMask in wordsToMask:
+#     matchingWords = getMatchingWords(wordsCoords[0], wordToMask)
+#     maskWords(matchingWords, page1, pdfOutput)
+
 
 # highlight = createHighlight(50, 400, 400, 500)
 
