@@ -68,3 +68,6 @@ returns a list of strings. Each string represents the content of a page from the
 Path to input pdf
 
 - Type(String)
+
+## Future Development
+- need to test multi page pdfs
