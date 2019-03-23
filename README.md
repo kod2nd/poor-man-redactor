@@ -27,19 +27,19 @@ redactor.pdfRedact(input, output, wordList)
 
 ### instance.pdfRedact(input,output,wordList)
 
-##### Input
+#### Input
 
 Path to input pdf
 
 - Type(String)
 
-##### Output
+#### Output
 
 Path to output pdf
 
 - Type(String)
 
-##### wordList
+#### wordList
 
 List of words to redact or mask
 
@@ -47,7 +47,9 @@ List of words to redact or mask
 
 ## Example
 
-Using artcle.pdf(in project root) as input pdf. Should give you output.pdf with masked out "SINGAPORE" and "Street 61"
+Using artcle.pdf(in project root) as input pdf. 
+
+Should give you output.pdf with masked out "SINGAPORE" and "Street 61"
 
 ```python
 from redactPDF.py import RedactPdf
