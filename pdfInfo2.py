@@ -66,8 +66,6 @@ class PdfInfo2():
         return matches
 
     def controller(self, path, entitiesToMask):
-        # entitiesToMask = ["Greenweave", "SINGAPORE", "Tampines Street 61", "housing development"]
-
         pdf = self.openPdf(path)
         pages = self.getPages(pdf)
         pagesChar = [self.getChars(page) for page in pages]
@@ -79,9 +77,3 @@ class PdfInfo2():
                 pagesChar[index], matches)
         return pagesCharsToMask
 
-
-# instance1 = PdfInfo2()
-
-# a = instance1.controller("article.pdf")
-# a = instance1.collateLines()
-# instance1.char2Words()
