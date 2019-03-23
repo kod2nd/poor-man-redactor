@@ -55,16 +55,25 @@ class PdfInfo2():
             for index in positions:
                 affectedChars.append(pageChar[index])
         return affectedChars
+
+    def getMatches(self, pageText, entitiesToMask):
+        matches = []
+        for entity in entitiesToMask:
+            matches = [*matches, *self.getMatchIndice(pageText, entity)]
+        return matches
         
-    def controller(self, path):
+    def controller(self, path, entitiesToMask):
+        # entitiesToMask = ["Greenweave", "SINGAPORE", "Tampines Street 61", "housing development"]
+
         pdf = self.openPdf(path)
         pages = self.getPages(pdf)
         pagesChar = [self.getChars(page) for page in pages]
         pagesText = [self.getPageText(page) for page in pages]
-        page1Char = pagesChar[0]
-        matches = self.getMatchIndice(pagesText[0], "stretch from")
-        someVar = self.matchedChars(page1Char,matches)
-        return someVar
+        pagesCharsToMask = {}
+        for index, page in enumerate(pagesText):
+            matches = self.getMatches(page,entitiesToMask)
+            pagesCharsToMask[str(index)] = self.matchedChars(pagesChar[index],matches)
+        return pagesCharsToMask
 
 
 # instance1 = PdfInfo2()
