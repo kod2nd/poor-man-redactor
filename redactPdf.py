@@ -35,6 +35,6 @@ class RedactPdf():
         self.addMasksToPages(pagesCharCoords, pdfOutput, outputPath)
         return
 
-wordsToMasks = ["SINGAPORE","Street 61"]
-instance1 = RedactPdf()
-instance1.pdfRedact("article.pdf","output.pdf",wordsToMasks)
+# wordsToMasks = ["SINGAPORE","Street 61"]
+# instance1 = RedactPdf()
+# instance1.pdfRedact("article.pdf","output.pdf",wordsToMasks)
