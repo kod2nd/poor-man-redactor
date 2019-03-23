@@ -1,5 +1,7 @@
 import pdfplumber
 import json
+import itertools
+import re
 
 
 class PdfInfo():
@@ -32,23 +34,13 @@ class PdfInfo():
         else:
             return str(value)
 
-    def controller(self, path):
-        pdf = self.openPdf(path)
-        pages = self.getPages(pdf)
-        docData = {}
-        for count, page in enumerate(pages):
-            docData[str(count+1)] = self.getChars(page)
-        self.convertToJson(docData)
-        self.docData = docData
-        return docData
-
-    def collateLines(self):
-        page1 = self.docData["1"]
+    def collateLines(self, pageNum, docData):
+        page = docData[pageNum]
         lineCount = 0
         lines = {}
         charTop = ""
         temp = []
-        for char in page1:
+        for char in page:
             if char["top"] == charTop:
                 temp.append(char)
             elif charTop == "":
@@ -60,13 +52,12 @@ class PdfInfo():
                 temp = []
                 temp.append(char)
                 charTop = char["top"]
-        self.convertToJson(lines, "lines.json")
         formattedLines = [self.char2Words(lineNum, lines) for lineNum in lines]
-        self.formattedLines = formattedLines
-        return formattedLines
+        wordsOnPage = list(itertools.chain(*formattedLines))
+        self.wordsOnPage = wordsOnPage
+        return wordsOnPage
 
     def char2Words(self, lineNum, lines):
-        #        print("Line:", type(lineNum))
         line = lines[lineNum]
         indexOfSpaces = []
         for index, char in enumerate(line):
@@ -84,23 +75,46 @@ class PdfInfo():
         joinedWords = [self.joinWord(word) for word in words]
         return joinedWords
 
+    def isNotAlphaNumeric(self,char):
+        if re.search('[a-zA-Z0-9]',char):
+            return False
+        else:
+            return True
+
     def joinWord(self, word):
         firstChar = word[0]
         lastChar = word[-1]
+        if self.isNotAlphaNumeric(firstChar["text"]):
+            if len(word) > 1:
+                firstChar = word[1]
+        if self.isNotAlphaNumeric(lastChar["text"]):
+            if len(word) > 1:
+                lastChar = word[-2]
         joinedWord = {
             "x0": firstChar["x0"],
             "y0": firstChar["y0"],
             "x1": lastChar["x1"],
             "y1": lastChar["y1"],
+            "page": firstChar["page_number"],
             "text": ""
         }
         for char in word:
             joinedWord["text"] += char["text"]
         return joinedWord
 
+    def getWordCoords(self, path):
+        pdf = self.openPdf(path)
+        pages = self.getPages(pdf)
+        docData = {}
+        for count, page in enumerate(pages):
+            docData[str(count+1)] = self.getChars(page)
+        docWords = [self.collateLines(page, docData) for page in docData]
+        self.convertToJson(docWords)
+        return docWords
+
 
 instance1 = PdfInfo()
 
-instance1.controller("article.pdf")
-a = instance1.collateLines()
+# a = instance1.getWordCoords("article.pdf")
+# a = instance1.collateLines()
 # instance1.char2Words()
