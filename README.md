@@ -1,6 +1,6 @@
 # Poor Man's PDF Redactor
 
-Mask out words in a pdf document
+Mask/Redact words in a pdf document
 
 ## Installation
 
@@ -8,7 +8,8 @@ Python 3
 
 - pip install PyPDF2
 - pip install pdfplumber
-  You man need to install ImageMagick [Installation instructions here](http://docs.wand-py.org/en/latest/guide/install.html#install-imagemagick-debian)
+  
+You man need to install ImageMagick [Installation instructions here](http://docs.wand-py.org/en/latest/guide/install.html#install-imagemagick-debian)
 
 ## Usage
 
@@ -23,7 +24,7 @@ redactor.pdfRedact(input, output, wordList)
 ```
 
 
-#### instance.pdfRedact(input,output,wordList)
+### instance.pdfRedact(input,output,wordList)
 
 ##### Input
 
